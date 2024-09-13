@@ -3,10 +3,10 @@ Load openpmd datasets to `scipp` `DataArrays`.
 
 ## Description
 ### What is this good for?
-(`scipp`)[https://github.com/scipp/scipp] is an alternative to (`xarray`)[https://github.com/pydata/xarray] and provides basically numpy arrays with axes description and units.
+[`scipp`](https://github.com/scipp/scipp) is an alternative to [`xarray`](https://github.com/pydata/xarray) and provides basically numpy arrays with axes description and units.
 * Automatically load axes and units with openPMD data.
 * Axes information  is automatically updated when slicing, indexing, or filtering your data.
-* With `scipp`'s plotting library (`plopp`)[https://github.com/scipp/plopp] it becomes an alternative to `openpmd-viewer`.
+* With `scipp`'s plotting library [`plopp`](https://github.com/scipp/plopp) it becomes an alternative to `openpmd-viewer`.
 * Many numpy and some scipy functions including all the basic algebraic operations on arrays are supported by `scipp`. When using these, the units and coordinates are automatically taken care of. 
 
 ### Limitations
