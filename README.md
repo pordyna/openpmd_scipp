@@ -69,8 +69,6 @@ print(Ex)
 ```
 
     Series does not contain iteration at the exact time. Using closest iteration instead.
-
-
     <scipp.DataArray>
     Dimensions: Sizes[x:26, y:26, z:201, ]
     Coordinates:
@@ -92,8 +90,6 @@ print(data_loader.get_field('E', 'x', time=20 * sc.Unit('fs'), time_tolerance=20
 ```
 
     Series does not contain iteration at the exact time. Using closest iteration instead.
-
-
     <scipp.DataArray>
     Dimensions: Sizes[x:26, y:26, z:201, ]
     Coordinates:
@@ -254,8 +250,6 @@ print(Ex)
 ```
 
     Series does not contain iteration at the exact time. Using closest iteration instead.
-
-
     <scipp.DataArray>
     Dimensions: Sizes[x:5, y:26, z:201, ]
     Coordinates:
