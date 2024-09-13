@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "openpmd-scipp"
+version = "0.1.0"
+description = ""
+authors = ["Paweł Ordyna <p.ordyna@hzdr.de>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+openpmd-api = "^0.15.2"
+numpy = "<2.0.0"
+scipp = "^24.9.1"
+
+[tool.poetry.group.extras.dependencies]
+plopp = "^24.9.1"
+notebook = "^7.2.2"
+ipywidgets = "^8.1.5"
+pythreejs = "^2.4.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
