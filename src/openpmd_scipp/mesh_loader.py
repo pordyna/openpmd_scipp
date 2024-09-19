@@ -45,6 +45,7 @@ class DataRelay:
             start /= self.record.grid_unit_SI
             start -= self.record.grid_global_offset[dd]
             start /= self.record.grid_spacing[dd]
+            start -= self.record_component.position[dd]
             offset[dd] = int(round(start))
             extent[dd] = self.dummy_array.coords[dim].size
         data = self.record_component.load_chunk(offset=offset, extent=extent)
