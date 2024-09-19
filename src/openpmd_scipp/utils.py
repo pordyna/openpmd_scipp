@@ -14,10 +14,10 @@ def _unit_dimension_to_scipp(unit_dimension):
         1 * sc.Unit('mol'),
         1 * sc.Unit('cd'),
     )
-    unit = 1 * sc.Unit('1')
+    unit = 1.0 * sc.Unit('1')
     for dim, base_unit in zip(unit_dimension, base_units):
         if dim != 0:
-            unit *= base_unit**dim
+            unit *= float(base_unit)**dim
     return unit.unit
 
 def closest(data, dim, val):
