@@ -25,14 +25,16 @@ class DataRelay:
             step = step * sc.Unit('m')
             assert sc.allclose(diffs, step), f"The data has to be contiguous! diffs: {diffs}, step: {step}"
 
+    def __getattr__(self, name):
+        # Expose methods, attributes, etc. of the dummy array
+        # This is called only if 'name' is not found in DataRelay or its base classes
+        # Probably could have used inheritance as well
+        return getattr(self.dummy_array, name)
+
     def __getitem__(self, *args, **kwargs):
         return DataRelay(series=self.series, record=self.record,
                          record_component=self.record_component,
                          dummy_array=self.dummy_array.__getitem__(*args, **kwargs))
-
-    @property
-    def coords(self):
-        return self.dummy_array.coords
 
     def load_data(self):
         offset = [0] * self.record_component.ndim
