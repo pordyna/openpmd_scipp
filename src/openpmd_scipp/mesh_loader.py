@@ -7,16 +7,11 @@ from copy import copy
 from .utils import _unit_dimension_to_scipp
 
 
-@dataclass
-class DataRelay:
-    series: pmd.Series
-    record: pmd.Record
-    record_component: pmd.Record_Component
-    dummy_array: sc.DataArray
+class DataRelay(sc.DataArray):
 
-    def __post_init__(self):
-        for dim in self.dummy_array.dims:
-            coord = self.dummy_array.coords[dim]
+    def _verify_init(self):
+        for dim in self.dims:
+            coord = self.coords[dim]
             diffs = coord[dim, 1:] - coord[dim, :-1]
             diffs = diffs.to(unit='m')
             idx = list(self.record.axis_labels).index(dim)
@@ -25,16 +20,18 @@ class DataRelay:
             step = step * sc.Unit('m')
             assert sc.allclose(diffs, step), f"The data has to be contiguous! diffs: {diffs}, step: {step}"
 
-    def __getattr__(self, name):
-        # Expose methods, attributes, etc. of the dummy array
-        # This is called only if 'name' is not found in DataRelay or its base classes
-        # Probably could have used inheritance as well
-        return getattr(self.dummy_array, name)
+    def __init__(self,series, record, record_component, dummy_array, coords):
+        super().__init__(data=dummy_array, coords=coords)
+        self.series= series
+        self.record =record
+        self.record_component=record_component
+        self._verify_init()
 
     def __getitem__(self, *args, **kwargs):
+        dummy_data_aray = super().__getitem__(*args, **kwargs)
         return DataRelay(series=self.series, record=self.record,
                          record_component=self.record_component,
-                         dummy_array=self.dummy_array.__getitem__(*args, **kwargs))
+                         dummy_array=dummy_data_aray.data, coords=dummy_data_aray.coords)
 
     def load_data(self):
         offset = [0] * self.record_component.ndim
