@@ -38,22 +38,21 @@ class DataRelay(sc.DataArray):
         extent = [0] * self.record_component.ndim
         for dd, dim in enumerate(self.record.axis_labels):
             try:
-                start = self.dummy_array.coords[dim].to(unit='m').value
+                start = self.coords[dim].to(unit='m').value
             except sc.DimensionError:
-                start = self.dummy_array.coords[dim][0].to(unit='m').value
+                start = self.coords[dim][0].to(unit='m').value
             start /= self.record.grid_unit_SI
             start -= self.record.grid_global_offset[dd]
             start /= self.record.grid_spacing[dd]
             start -= self.record_component.position[dd]
             offset[dd] = int(round(start))
-            extent[dd] = self.dummy_array.coords[dim].size
+            extent[dd] = self.coords[dim].size
         data = self.record_component.load_chunk(offset=offset, extent=extent)
         self.series.flush()
         data *= self.record_component.unit_SI
         data = np.squeeze(data)
-        propper_array = self.dummy_array.copy()
-        propper_array.values = data
-        return propper_array
+        self.values = data
+        return self
 
 
 def get_field_data_relay(series, iteration,
@@ -83,9 +82,8 @@ def get_field_data_relay(series, iteration,
     dummy_array = sc.array(dims=dims, values=dummy_array,
                            unit=_unit_dimension_to_scipp(record.unit_dimension))
 
-    dummy_data_array =  sc.DataArray(
-            data=dummy_array, coords=coords)
-    return DataRelay(series=series, record=record, record_component=rc, dummy_array=dummy_data_array)
+
+    return DataRelay(series=series, record=record, record_component=rc, dummy_array=dummy_array, coords=coords)
 
 
 def get_field(series, iteration,
