@@ -330,6 +330,26 @@ Ex.plot()
 ### Working with particle data
 Coming soon!
 
+## Developer documentation
+### Generating this README
+README file is generated from the README.ipynb.
+```
+# Download and extract example datasets if not present
+# Will download data into `.data`
+make data
+
+make
+```
+### Running tests
+At the moment we only test we have is an integration test running this notebook. After downloading example datasets with `make data`, if needed, run:
+```
+make test
+```
+
+
+
+
+
 
 ```python
 
