@@ -22,7 +22,26 @@ pythreejs = ">=2.4.2"
 pytest = "^8.3.4"
 nbmake = "^1.5.4"
 
+[tool.poetry.group.dev.dependencies]
+black = "^24.10.0"
+docformatter = "^1.7.5"
+ruff = "^0.9.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 100
+
+[tool.docformatter]
+recursive = true
+pre-summary-space = true
+wrap-summaries = 100
+wrap-descriptions = 100
+
+[tool.ruff]
+line-length = 100  # Matches Black's line length
+exclude = ["build", "dist", "__pycache__", ".data"]
+select = ["E", "F", "B", "D"]  # Enable specific rule categories: Errors, Flake8, Bugbear, and Docstrings
+ignore = ["E203"]  # Ignore E203 to avoid conflicts with Black's style
