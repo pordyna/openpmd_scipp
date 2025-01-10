@@ -39,12 +39,17 @@ tar -zxvf example-3d.tar.gz
 import openpmd_scipp as pmdsc
 import scipp as sc
 
-path = 'openPMD-example-datasets/example-3d/hdf5/data%T.h5'
-data_loader = pmdsc.DataLoader(path)
+
 ```
 
 
 ```python
+path = 'openPMD-example-datasets/example-3d/hdf5/data%T.h5'
+```
+
+
+```python
+data_loader = pmdsc.DataLoader(path)
 print(data_loader.iterations)
 ```
 
@@ -176,7 +181,7 @@ Ex_slice.plot()
 
 
     
-![svg](README_files/README_13_0.svg)
+![svg](README_files/README_14_0.svg)
     
 
 
@@ -210,7 +215,7 @@ Ex_line.plot()
 
 
     
-![svg](README_files/README_15_0.svg)
+![svg](README_files/README_16_0.svg)
     
 
 
@@ -229,7 +234,7 @@ Just as an example we can easily plot the square of the field:
 
 
     
-![svg](README_files/README_17_0.svg)
+![svg](README_files/README_18_0.svg)
     
 
 
@@ -317,7 +322,7 @@ Ex.plot()
 
 
     
-![svg](README_files/README_24_0.svg)
+![svg](README_files/README_25_0.svg)
     
 
 
