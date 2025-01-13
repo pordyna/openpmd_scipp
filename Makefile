@@ -3,7 +3,7 @@
 # Variables
 PYTHON = poetry run python
 
-.PHONY: help install data test docs clean clean-data
+.PHONY: help install data test docs clean clean-data format lint
 
 help:
 	@echo "Available commands:"
@@ -13,6 +13,9 @@ help:
 	@echo "  docs       - Generate documentation (README)"
 	@echo "  clean      - Clean up temporary files"
 	@echo "  clean-data - Remove additional data"
+	@echo "  format     - Autoformat code"
+	@echo "  lint       - Check formatting and PEP8 compliance"
+	@echo "  lint-fix   - Same like lint but auto applies fixes"
 
 install:
 	poetry install
@@ -38,3 +41,12 @@ clean:
 
 clean-data:
 	rm -r .data
+
+# Format code and docstrings
+format:
+	poetry run ruff format
+# Lint to check if code follows formatting standards
+lint:
+	poetry run ruff check
+lint-fix:
+	poetry run ruff check --fix
