@@ -38,13 +38,11 @@ tar -zxvf example-3d.tar.gz
 ```python
 import openpmd_scipp as pmdsc
 import scipp as sc
-
-
 ```
 
 
 ```python
-path = 'openPMD-example-datasets/example-3d/hdf5/data%T.h5'
+path = "openPMD-example-datasets/example-3d/hdf5/data%T.h5"
 ```
 
 
@@ -69,7 +67,7 @@ Let us plot electric field's x component at 65 fs.
 
 
 ```python
-Ex = data_loader.get_field('E', 'x', time=65 * sc.Unit('fs'))
+Ex = data_loader.get_field("E", "x", time=65 * sc.Unit("fs"))
 print(Ex)
 ```
 
@@ -91,7 +89,7 @@ You may have noticed, that the time requested does not have to match exactly any
 
 
 ```python
-print(data_loader.get_field('E', 'x', time=20 * sc.Unit('fs'), time_tolerance=20 * sc.Unit('fs')))
+print(data_loader.get_field("E", "x", time=20 * sc.Unit("fs"), time_tolerance=20 * sc.Unit("fs")))
 ```
 
     Series does not contain iteration at the exact time. Using closest iteration instead.
@@ -113,7 +111,7 @@ print(data_loader.get_field('E', 'x', time=20 * sc.Unit('fs'), time_tolerance=20
 
 ```python
 # It is also possible to use iteration number instead:
-print(data_loader.get_field('E', 'x', iteration=200))
+print(data_loader.get_field("E", "x", iteration=200))
 ```
 
     <scipp.DataArray>
@@ -132,7 +130,7 @@ print(data_loader.get_field('E', 'x', iteration=200))
 
 ```python
 # For scalar fields just omit the second argument:
-print(data_loader.get_field('rho', iteration=200))
+print(data_loader.get_field("rho", iteration=200))
 ```
 
     <scipp.DataArray>
@@ -154,8 +152,8 @@ But we can for example select a slice. For that we can use a helper function `pm
 
 
 ```python
-slicing_idx = pmdsc.closest(Ex, 'x', 2 * sc.Unit('um'))
-Ex_slice = Ex['x', slicing_idx]
+slicing_idx = pmdsc.closest(Ex, "x", 2 * sc.Unit("um"))
+Ex_slice = Ex["x", slicing_idx]
 print(Ex_slice)
 ```
 
@@ -189,7 +187,7 @@ Ex_slice.plot()
 
 ```python
 # We can also plot line plots:
-Ex_line = Ex_slice['z', pmdsc.closest(Ex_slice, 'z', 1.4e-5 * sc.Unit('m'))]
+Ex_line = Ex_slice["z", pmdsc.closest(Ex_slice, "z", 1.4e-5 * sc.Unit("m"))]
 print(Ex_line)
 ```
 
@@ -245,10 +243,11 @@ In the above example the whole 3D field is loaded into memory and sliced afterwa
 
 ```python
 # The full 3D array is not loaded into memory at this point.
-Ex = data_loader.get_field('E', 'x', time=65 * sc.Unit('fs'), relay=True)
-# This time we will select a range rather than a slice. For a range there is no need for an exact match.
+Ex = data_loader.get_field("E", "x", time=65 * sc.Unit("fs"), relay=True)
+# This time we will select a range rather than a slice.
+# For a range there is no need for an exact match.
 # But, we could also select a slice just like in the previous example.
-Ex = Ex['x', -2e-6 * sc.Unit('m'):2e-6 * sc.Unit('m')]
+Ex = Ex["x", -2e-6 * sc.Unit("m") : 2e-6 * sc.Unit("m")]
 # Only now the smaller subset wil be loaded into memory
 Ex = Ex.load_data()
 print(Ex)
@@ -273,8 +272,13 @@ It is also possible to combine arrays from different iterations into one using `
 
 
 ```python
-Ex = sc.concat([data_loader.get_field('E', 'x', iteration=iteration.value, time_tolerance=None)
-                for iteration in data_loader.iterations['iteration_id']], dim='t')
+Ex = sc.concat(
+    [
+        data_loader.get_field("E", "x", iteration=iteration.value, time_tolerance=None)
+        for iteration in data_loader.iterations["iteration_id"]
+    ],
+    dim="t",
+)
 print(Ex)
 ```
 
@@ -296,7 +300,7 @@ The reason for the z coordinate having two dimensions (t,z) is the fact that the
 
 ```python
 # Let us just slice at some points to get a 2D dataset
-Ex = Ex['x', 10]['y', 10]
+Ex = Ex["x", 10]["y", 10]
 print(Ex)
 ```
 

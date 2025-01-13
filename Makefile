@@ -15,6 +15,7 @@ help:
 	@echo "  clean-data - Remove additional data"
 	@echo "  format     - Autoformat code"
 	@echo "  lint       - Check formatting and PEP8 compliance"
+	@echo "  lint-fix   - Same like lint but auto applies fixes"
 
 install:
 	poetry install
@@ -43,11 +44,9 @@ clean-data:
 
 # Format code and docstrings
 format:
-	poetry run black .
-	poetry run docformatter -r --in-place .
-
+	poetry run ruff format
 # Lint to check if code follows formatting standards
 lint:
-	poetry run black --check .
-	poetry run docformatter -r --check .
-	poetry run ruff check .
+	poetry run ruff check
+lint-fix:
+	poetry run ruff check --fix
