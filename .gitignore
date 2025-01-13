@@ -161,3 +161,4 @@ cython_debug/
 /openPMD-example-datasets/
 
 .data/
+.qodo
