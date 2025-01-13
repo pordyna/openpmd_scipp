@@ -342,16 +342,14 @@ README file is generated from the README.ipynb.
 # Will download data into `.data`
 make data
 
-make
+make docs
 ```
 ### Running tests
 At the moment we only test we have is an integration test running this notebook. After downloading example datasets with `make data`, if needed, run:
 ```
 make test
 ```
-
-
-
+You can also run tests with different python version with tox, but you need to have the python version installed, for example with pyenv.
 
 
 
