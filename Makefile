@@ -16,9 +16,10 @@ help:
 	@echo "  format     - Autoformat code"
 	@echo "  lint       - Check formatting and PEP8 compliance"
 	@echo "  lint-fix   - Same like lint but auto applies fixes"
+	@echo "  pre-commit-install   - Initialize and update hooks"
 
 install:
-	poetry install
+	poetry install --with dev --with extras
 
 data:
 	mkdir .data
