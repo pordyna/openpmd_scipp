@@ -36,8 +36,9 @@ tar -zxvf example-3d.tar.gz
 
 
 ```python
-import openpmd_scipp as pmdsc
 import scipp as sc
+
+import openpmd_scipp as pmdsc
 ```
 
 
