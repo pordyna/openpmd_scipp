@@ -1,5 +1,37 @@
 # .pre-commit-config.yaml
 repos:
+#- repo: local
+#  hooks:
+#      - id: format
+#        name: Format Code
+#        entry: make format
+#        language: system
+#        types: [ python ]
+#      - id: lint
+#        name: Run Linting
+#        entry: make lint
+#        language: system
+#        types: [python]
+#      - id: test
+#        name: Run Tests
+#        entry: make test
+#        language: system
+#        always_run: true
+#        pass_filenames: false  # Disable passing filenames
+#      - id: docs
+#        name: Generate docs
+#        entry: make docs
+#        language: system
+#        always_run: true
+#        files: README.ipynb
+#        pass_filenames: false  # Disable passing filenames
+#      - id: clean
+#        name: Clean temp files and jupyter files
+#        entry: make clean
+#        language: system
+#        always_run: true
+#        pass_filenames: false  # Disable passing filenames
+
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.1.0  # this is optional, use `pre-commit autoupdate` to get the latest rev!
     hooks:
@@ -13,5 +45,4 @@ repos:
     -   id: poetry-check
     -   id: poetry-lock
     -   id: poetry-install
-        stages:
-        -   post-checkout
+        stages: [post-checkout]

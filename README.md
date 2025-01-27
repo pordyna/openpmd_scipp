@@ -47,6 +47,11 @@ path = "openPMD-example-datasets/example-3d/hdf5/data%T.h5"
 
 
 ```python
+path = ".data/" + path
+```
+
+
+```python
 data_loader = pmdsc.DataLoader(path)
 print(data_loader.iterations)
 ```
@@ -72,6 +77,8 @@ print(Ex)
 ```
 
     Series does not contain iteration at the exact time. Using closest iteration instead.
+
+
     <scipp.DataArray>
     Dimensions: Sizes[x:26, y:26, z:201, ]
     Coordinates:
@@ -93,6 +100,8 @@ print(data_loader.get_field("E", "x", time=20 * sc.Unit("fs"), time_tolerance=20
 ```
 
     Series does not contain iteration at the exact time. Using closest iteration instead.
+
+
     <scipp.DataArray>
     Dimensions: Sizes[x:26, y:26, z:201, ]
     Coordinates:
@@ -179,7 +188,7 @@ Ex_slice.plot()
 
 
 
-![svg](README_files/README_14_0.svg)
+![svg](README_files/README_15_0.svg)
 
 
 
@@ -213,7 +222,7 @@ Ex_line.plot()
 
 
 
-![svg](README_files/README_16_0.svg)
+![svg](README_files/README_17_0.svg)
 
 
 
@@ -232,7 +241,7 @@ Just as an example we can easily plot the square of the field:
 
 
 
-![svg](README_files/README_18_0.svg)
+![svg](README_files/README_19_0.svg)
 
 
 
@@ -254,6 +263,8 @@ print(Ex)
 ```
 
     Series does not contain iteration at the exact time. Using closest iteration instead.
+
+
     <scipp.DataArray>
     Dimensions: Sizes[x:5, y:26, z:201, ]
     Coordinates:
@@ -326,7 +337,7 @@ Ex.plot()
 
 
 
-![svg](README_files/README_25_0.svg)
+![svg](README_files/README_26_0.svg)
 
 
 

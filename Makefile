@@ -30,9 +30,10 @@ test:
 	poetry run pytest --nbmake README.ipynb
 
 docs:
-	rm -r README_files
-	$(PYTHON) -m nbconvert --to markdown README.ipynb --output README.md --TagRemovePreprocessor.enabled=True --TagRemovePreprocessor.remove_cell_tags remove_cell
-
+	rm -rf README_files
+	$(PYTHON) -m nbconvert --to notebook --execute README.ipynb --output README.executed.ipynb
+	$(PYTHON) -m nbconvert --to markdown README.executed.ipynb --output README.md --TagRemovePreprocessor.enabled=True --TagRemovePreprocessor.remove_cell_tags remove_cell
+	rm -f README.executed.ipynb
 clean:
 	find . -type d -name '__pycache__' -exec rm -rf {} +
 	find . -type d -name '*.egg-info' -exec rm -rf {} +
@@ -51,3 +52,7 @@ lint:
 	poetry run ruff check
 lint-fix:
 	poetry run ruff check --fix
+
+pre-commit-install:
+	pre-commit install
+	pre-commit autoupdate
