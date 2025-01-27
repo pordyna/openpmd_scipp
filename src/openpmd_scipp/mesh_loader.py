@@ -7,9 +7,9 @@ License:
 GPL - 3.0 license. See LICENSE file for details.
 """
 
+import numpy as np
 import openpmd_api as pmd
 import scipp as sc
-import numpy as np
 
 from .utils import _unit_dimension_to_scipp
 

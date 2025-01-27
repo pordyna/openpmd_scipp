@@ -38,7 +38,7 @@ build-backend = "poetry.core.masonry.api"
 line-length = 100  # Matches Black's line length + 10%
 exclude = ["build", "dist", "__pycache__", ".data"]
 # Enable specific rule categories: Errors, Flake8, Bugbear, and Docstrings
-lint.select = ["A", "E", "C4", "F", "W", "N", "B", "D", "ICN", "NPY"]
+lint.select = ["A", "E", "C4", "F", "W", "N", "B", "D", "ICN", "NPY", "I"]
 lint.ignore = ["D203", "D213"]  # Ignore E203 to avoid conflicts with Black's style
 [tool.ruff.lint.flake8-bugbear]
 # Allow default arguments like, e.g., `time = 1.0 * sc.Unit("fs")`.

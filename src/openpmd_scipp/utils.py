@@ -7,8 +7,8 @@ License:
 GPL - 3.0 license. See LICENSE file for details.
 """
 
-import scipp as sc
 import numpy as np
+import scipp as sc
 
 
 def _unit_dimension_to_scipp(unit_dimension):
