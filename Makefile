@@ -38,6 +38,7 @@ clean:
 	find . -type d -name '*.egg-info' -exec rm -rf {} +
 	find . -type d -name '*.pytest_cache' -exec rm -rf {} +
 	rm -rf .mypy_cache .pytest_cache
+	nb-clean clean README.ipynb
 
 clean-data:
 	rm -r .data

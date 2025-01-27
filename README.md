@@ -7,10 +7,10 @@ Load openpmd datasets to `scipp` `DataArrays`.
 * Automatically load axes and units with openPMD data.
 * Axes information  is automatically updated when slicing, indexing, or filtering your data.
 * With `scipp`'s plotting library [`plopp`](https://github.com/scipp/plopp) it becomes an alternative to `openpmd-viewer`.
-* Many numpy and some scipy functions including all the basic algebraic operations on arrays are supported by `scipp`. When using these, the units and coordinates are automatically taken care of. 
+* Many numpy and some scipy functions including all the basic algebraic operations on arrays are supported by `scipp`. When using these, the units and coordinates are automatically taken care of.
 
 ### Limitations
-* `scipp` currently handles units with a library, that does not support non-integer exponents for units. This can become problematic in some calculations. 
+* `scipp` currently handles units with a library, that does not support non-integer exponents for units. This can become problematic in some calculations.
 
 
 
@@ -30,7 +30,7 @@ cd openPMD-example-datasets
 tar -zxvf example-2d.tar.gz
 tar -zxvf example-3d.tar.gz
 ```
- 
+
 
 ### Opening series
 
@@ -57,12 +57,12 @@ print(data_loader.iterations)
     * t                         float64              [s]  (t)  [3.28471e-14, 6.56942e-14, ..., 1.31388e-13, 1.64236e-13]
     Data:
       iteration_id                int64  [dimensionless]  (t)  [100, 200, ..., 400, 500]
-    
-    
+
+
 
 
 ### Working with meshes (fields)
-Let us plot electric field's x component at 65 fs. 
+Let us plot electric field's x component at 65 fs.
 
 
 
@@ -81,8 +81,8 @@ print(Ex)
     * z                         float64              [m]  (z)  [4.7e-06, 4.8e-06, ..., 2.46e-05, 2.47e-05]
     Data:
                                 float64            [V/m]  (x, y, z)  [-1.08652e+08, -1.9758e+08, ..., 0, 0]
-    
-    
+
+
 
 
 You may have noticed, that the time requested does not have to match exactly any iteration. By default, if there is an iteration within 10 fs distance it will be used instead. This 10 fs tolerance can be adjusted by setting `time_tolerance`. The check can be also disabled by setting `time_tolerance=None`, with that the method will return the closest iteration regardless of the difference. So that this will also work:
@@ -102,8 +102,8 @@ print(data_loader.get_field("E", "x", time=20 * sc.Unit("fs"), time_tolerance=20
     * z                         float64              [m]  (z)  [-5.2e-06, -5.1e-06, ..., 1.47e-05, 1.48e-05]
     Data:
                                 float64            [V/m]  (x, y, z)  [-1.08549e+07, -1.3967e+07, ..., 0, 0]
-    
-    
+
+
 
 
 , but `data_loader.get_field('E', 'x', time=20 * sc.Unit('fs'))` not.
@@ -123,8 +123,8 @@ print(data_loader.get_field("E", "x", iteration=200))
     * z                         float64              [m]  (z)  [4.7e-06, 4.8e-06, ..., 2.46e-05, 2.47e-05]
     Data:
                                 float64            [V/m]  (x, y, z)  [-1.08652e+08, -1.9758e+08, ..., 0, 0]
-    
-    
+
+
 
 
 
@@ -142,8 +142,8 @@ print(data_loader.get_field("rho", iteration=200))
     * z                         float64              [m]  (z)  [4.7e-06, 4.8e-06, ..., 2.46e-05, 2.47e-05]
     Data:
                                 float64           [mC/L]  (x, y, z)  [-7169.01, -7526.4, ..., 3.16049e-11, 1.22782e-11]
-    
-    
+
+
 
 
 #### Plotting
@@ -166,8 +166,8 @@ print(Ex_slice)
     * z                         float64              [m]  (z)  [4.7e-06, 4.8e-06, ..., 2.46e-05, 2.47e-05]
     Data:
                                 float64            [V/m]  (y, z)  [4.86614e+08, 6.67018e+08, ..., 0, 0]
-    
-    
+
+
 
 
 
@@ -178,9 +178,9 @@ Ex_slice.plot()
 
 
 
-    
+
 ![svg](README_files/README_14_0.svg)
-    
+
 
 
 
@@ -200,8 +200,8 @@ print(Ex_line)
       z                         float64              [m]  ()  1.4e-05
     Data:
                                 float64            [V/m]  (y)  [3.46069e+07, -2.94134e+07, ..., 8.89353e+06, -4.32182e+07]
-    
-    
+
+
 
 
 
@@ -212,9 +212,9 @@ Ex_line.plot()
 
 
 
-    
+
 ![svg](README_files/README_16_0.svg)
-    
+
 
 
 
@@ -231,14 +231,14 @@ Just as an example we can easily plot the square of the field:
 
 
 
-    
+
 ![svg](README_files/README_18_0.svg)
-    
+
 
 
 
 ### Loading chunks
-In the above example the whole 3D field is loaded into memory and sliced afterward. It is also possible to just load a sub-chunk into memory. When the `relay` option in `get_field` is set to `True` it will return a dummy object that only allocates memory for a single value. This relay object can be indexed, sliced etc. using the `scipp` indexing just like before. (The only limitation given by the `openpmd-api` is that the result has to a be contiguous chunk of the original array). The `load_data` method loads data and returns a proper `scipp` data array. 
+In the above example the whole 3D field is loaded into memory and sliced afterward. It is also possible to just load a sub-chunk into memory. When the `relay` option in `get_field` is set to `True` it will return a dummy object that only allocates memory for a single value. This relay object can be indexed, sliced etc. using the `scipp` indexing just like before. (The only limitation given by the `openpmd-api` is that the result has to a be contiguous chunk of the original array). The `load_data` method loads data and returns a proper `scipp` data array.
 
 
 ```python
@@ -263,8 +263,8 @@ print(Ex)
     * z                         float64              [m]  (z)  [4.7e-06, 4.8e-06, ..., 2.46e-05, 2.47e-05]
     Data:
                                 float64            [V/m]  (x, y, z)  [-3.65733e+08, -5.01237e+08, ..., 0, 0]
-    
-    
+
+
 
 
 ### Time axis
@@ -291,8 +291,8 @@ print(Ex)
     * z                         float64              [m]  (t, z)  [-5.2e-06, -5.1e-06, ..., 5.41e-05, 5.42e-05]
     Data:
                                 float64            [V/m]  (t, x, y, z)  [-1.08549e+07, -1.3967e+07, ..., 0, 0]
-    
-    
+
+
 
 
 The reason for the z coordinate having two dimensions (t,z) is the fact that the data comes from a moving window simulation. This is clearly visible in the plot below.
@@ -313,8 +313,8 @@ print(Ex)
     * z                         float64              [m]  (t, z)  [-5.2e-06, -5.1e-06, ..., 5.41e-05, 5.42e-05]
     Data:
                                 float64            [V/m]  (t, z)  [-8.41738e+08, -7.8752e+08, ..., 0, 0]
-    
-    
+
+
 
 
 
@@ -325,9 +325,9 @@ Ex.plot()
 
 
 
-    
+
 ![svg](README_files/README_25_0.svg)
-    
+
 
 
 
