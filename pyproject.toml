@@ -27,6 +27,8 @@ docformatter = "^1.7.5"
 ruff = "^0.9.0"
 pytest = "^8.3.4"
 nbmake = "^1.5.4"
+nb-clean = "^4.0.1"
+pre-commit = "^4.1.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -36,7 +38,7 @@ build-backend = "poetry.core.masonry.api"
 line-length = 100  # Matches Black's line length + 10%
 exclude = ["build", "dist", "__pycache__", ".data"]
 # Enable specific rule categories: Errors, Flake8, Bugbear, and Docstrings
-lint.select = ["A", "E", "C4", "F", "W", "N", "B", "D", "ICN", "NPY"]
+lint.select = ["A", "E", "C4", "F", "W", "N", "B", "D", "ICN", "NPY", "I"]
 lint.ignore = ["D203", "D213"]  # Ignore E203 to avoid conflicts with Black's style
 [tool.ruff.lint.flake8-bugbear]
 # Allow default arguments like, e.g., `time = 1.0 * sc.Unit("fs")`.
@@ -44,4 +46,3 @@ extend-immutable-calls = ["scipp.Unit"]
 [tool.ruff.format]
 docstring-code-format = true
 skip-magic-trailing-comma = true
-
