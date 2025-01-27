@@ -1,12 +1,16 @@
-[tool.poetry]
+[project]
+# Support Python 3.11+.
+requires-python = ">=3.10"
 name = "openpmd-scipp"
-version = "0.1.1"
+version = "0.2.0"
 description = ""
+
+[tool.poetry]
 authors = ["Paweł Ordyna <p.ordyna@hzdr.de>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 openpmd-api = ">=0.15.2"
 numpy = ">=1.15.0"
 scipp = ">=24.9.1"
@@ -17,6 +21,28 @@ notebook = ">=7.2.2"
 ipywidgets = ">=8.1.5"
 pythreejs = ">=2.4.2"
 
+[tool.poetry.group.dev.dependencies]
+black = {extras = ["jupyter"], version = "^24.10.0"}
+docformatter = "^1.7.5"
+ruff = "^0.9.0"
+pytest = "^8.3.4"
+nbmake = "^1.5.4"
+nb-clean = "^4.0.1"
+pre-commit = "^4.1.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 100  # Matches Black's line length + 10%
+exclude = ["build", "dist", "__pycache__", ".data"]
+# Enable specific rule categories: Errors, Flake8, Bugbear, and Docstrings
+lint.select = ["A", "E", "C4", "F", "W", "N", "B", "D", "ICN", "NPY", "I"]
+lint.ignore = ["D203", "D213"]  # Ignore E203 to avoid conflicts with Black's style
+[tool.ruff.lint.flake8-bugbear]
+# Allow default arguments like, e.g., `time = 1.0 * sc.Unit("fs")`.
+extend-immutable-calls = ["scipp.Unit"]
+[tool.ruff.format]
+docstring-code-format = true
+skip-magic-trailing-comma = true
