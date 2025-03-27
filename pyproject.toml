@@ -2,7 +2,7 @@
 # Support Python 3.11+.
 requires-python = ">=3.10"
 name = "openpmd-scipp"
-version = "0.2.0"
+version = "0.2.1"
 description = ""
 
 [tool.poetry]
