@@ -130,7 +130,7 @@ class DataRelay(sc.DataArray):
         self.series.flush()
         data *= self.record_component.unit_SI
         data = np.squeeze(data)
-        data_array = self.copy()
+        data_array = self.copy(deep=False)
         data_array.values = data
         return data_array
 
