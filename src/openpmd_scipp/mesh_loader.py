@@ -7,14 +7,24 @@ License:
 GPL - 3.0 license. See LICENSE file for details.
 """
 
+from copy import deepcopy
+from dataclasses import dataclass
+from functools import cached_property
+from types import EllipsisType
+from typing import Iterable, MutableMapping
+
 import numpy as np
 import openpmd_api as pmd
 import scipp as sc
+from memory_profiler import profile
 
 from .utils import _unit_dimension_to_scipp
 
+IndexingType = int | slice | sc.Variable | list[int]
 
-class DataRelay(sc.DataArray):
+
+@dataclass(frozen=True)
+class DataRelay:
     """Data relay for loading openPMD meshes into scipp.
 
     Attributes
@@ -38,7 +48,14 @@ class DataRelay(sc.DataArray):
 
     """
 
-    def _verify_init(self):
+    dims: Iterable[str]
+    coords: sc.typing.MetaDataMap
+    unit: str | sc.Unit | None
+    series: pmd.Series
+    record: pmd.Mesh
+    record_component: pmd.Mesh_Record_Component
+
+    def __post_init__(self):
         """Verify that the data is contiguous.
 
         Check if the chosen subset is contiguous in the openPMD storage by checking coordinate
@@ -46,6 +63,19 @@ class DataRelay(sc.DataArray):
 
         This is needed since openPMD does nto allow us to load strided chunks.
         """
+        dims_set = set(self.dims)
+        dims_list = list(dims_set)
+
+        if not len(dims_set) == len(dims_list):
+            raise ValueError(f"Dimension labels must be unique. Passed dims {list(self.dims)}.")
+        if not dims_set.issubset(self.coords.keys()):
+            raise ValueError(
+                f"Coordinates must be provided for all dimensions. but {dims_set}"
+                f" is not a subset of {list(self.coords.keys())}."
+            )
+        for coord in self.coords.values():
+            assert coord.ndim in {0, 1}, "Only 1 dimensional or scalar coordinates are supported."
+
         for dim in self.dims:
             coord = self.coords[dim]
             diffs = coord[dim, 1:] - coord[dim, :-1]
@@ -58,28 +88,37 @@ class DataRelay(sc.DataArray):
                 f"The data has to be contiguous! diffs: {diffs}, step: {step}"
             )
 
-    def __init__(self, series, record, record_component, dummy_array, coords):
-        """Initialize the DataRelay object.
+    @cached_property
+    def _da_extended_coords(self) -> MutableMapping[str, sc.DataArray]:
+        """TODO."""
+        return {
+            k: sc.DataArray(data=v, coords={k: v}) for k, v in self.coords.items() if v.ndim >= 1
+        }
 
-        :param series: The openPMD series object associated with the data.
-        :type series: openpmd_api.Series
-        :param record: The openPMD record object associated with the mesh.
-        :type record: openpmd_api.Record
-        :param record_component: The openPMD record component associated with the mesh.
-        :type record_component: openpmd_api.Record_Component
-        :param dummy_array: A scipp array used for the dummy interface. It should use as little
-            memory as possible. Usually achieved by setting the stride of the values array to 0. Can
-            be read- only.
-        :type dummy_array: sc.array
-        :param coords: A dictionary of coordinates for the DataArray.
-        """
-        super().__init__(data=dummy_array, coords=coords)
-        self.series = series
-        self.record = record
-        self.record_component = record_component
-        self._verify_init()
+    @cached_property
+    def ndim(self) -> int:
+        """TODO."""
+        return len(list(self.dims))
 
-    def __getitem__(self, *args, **kwargs):
+    @cached_property
+    def shape(self) -> tuple:
+        """TODO."""
+        return tuple([self.coords[k].size for k in self.dims])
+
+    @cached_property
+    def size(self) -> int:
+        """TODO."""
+        s = 1
+        for ss in self.shape:
+            s *= ss
+        return s
+
+    @cached_property
+    def dtype(self) -> sc.typing.DTypeLike:
+        """TODO."""
+        return self.record_component.dtype
+
+    def __getitem__(self, arg: EllipsisType | IndexingType | tuple[str, IndexingType]):
         """Retrieve a subset of the data, returning a new DataRelay instance.
 
         Override this method from the base class to use the DataRelay initializer and ensure that
@@ -92,16 +131,44 @@ class DataRelay(sc.DataArray):
         :return: A new DataRelay instance with the sliced data.
         :rtype: DataRelay
         """
-        dummy_data_aray = super().__getitem__(*args, **kwargs)
+        if arg is ...:
+            return self
+
+        if isinstance(arg, tuple):
+            coord_str, arg = arg
+        elif self.ndim == 1:
+            coord_str = next(iter(self.dims))
+        elif self.ndim == 0:
+            raise ValueError("Can't slice a 0 dimensional Variable.")
+        else:
+            raise ValueError(
+                "For ndim>1, one needs to choose a dimension to slice "
+                "like: relay_instance['coord_label', <index, slice, etc..>]."
+            )
+
+        if coord_str not in self.dims:
+            raise ValueError(f"{coord_str} not in dims: {list(self.dims)}.")
+        # We do a deep copy, coordinate arrays are rather not that big, this is saver
+        # but could probably think of sth else
+        # We need coords as data arrays for indexing with sc.Variable
+        new_coords = deepcopy(self._da_extended_coords)
+        new_coords[coord_str] = new_coords[coord_str][(coord_str, arg)]
+        # get back to normal coords containing Variables not DataArrays
+        new_coords = {k: v.data for k, v in new_coords.items()}
+        # keep scalar coords that are ignored in da_extended
+        new_coords = dict(self.coords) | new_coords
+
         return DataRelay(
             series=self.series,
             record=self.record,
             record_component=self.record_component,
-            dummy_array=dummy_data_aray.data,
-            coords=dummy_data_aray.coords,
+            dims=self.dims,
+            unit=self.unit,
+            coords=new_coords,
         )
 
-    def load_data(self):
+    @profile
+    def load_data(self) -> sc.DataArray:
         """Load data from the openPMD dataset.
 
         Loads a chunk based on the current data array coordinates.
@@ -126,12 +193,15 @@ class DataRelay(sc.DataArray):
             start -= self.record_component.position[dd]
             offset[dd] = int(round(start))
             extent[dd] = self.coords[dim].size
-        data = self.record_component.load_chunk(offset=offset, extent=extent)
+
+        scipp_array = sc.empty(
+            dims=tuple(self.dims), shape=self.shape, dtype=self.dtype, unit=self.unit
+        )
+        self.record_component.load_chunk(scipp_array.values.data, offset=offset, extent=extent)
         self.series.flush()
-        data *= self.record_component.unit_SI
-        data = np.squeeze(data)
-        data_array = self.copy(deep=False)
-        data_array.values = data
+        scipp_array *= self.record_component.unit_SI
+        scipp_array = sc.squeeze(scipp_array)
+        data_array = sc.DataArray(data=scipp_array, coords=self.coords)
         return data_array
 
 
@@ -171,16 +241,9 @@ def get_field_data_relay(series, iteration, field, component=pmd.Mesh_Record_Com
         coord = sc.array(dims=[dim], values=values, unit="m")
         coords[dim] = coord
 
-    small = np.zeros(1, dtype=rc.dtype)
-    dummy_array = np.lib.stride_tricks.as_strided(
-        small, shape=rc.shape, strides=[0] * rc.ndim, writeable=False
-    )
-    dummy_array = sc.array(
-        dims=dims, values=dummy_array, unit=_unit_dimension_to_scipp(record.unit_dimension)
-    )
-
+    unit = _unit_dimension_to_scipp(record.unit_dimension)
     return DataRelay(
-        series=series, record=record, record_component=rc, dummy_array=dummy_array, coords=coords
+        series=series, record=record, record_component=rc, dims=dims, coords=coords, unit=unit
     )
 
 

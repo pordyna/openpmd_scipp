@@ -12,8 +12,8 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 openpmd-api = ">=0.15.2"
-numpy = ">=1.15.0"
-scipp = ">=24.9.1"
+numpy = "^2.2.4"
+scipp = "^25.3.0"
 
 [tool.poetry.group.extras.dependencies]
 plopp = ">=24.9.1"
@@ -29,6 +29,7 @@ pytest = "^8.3.4"
 nbmake = "^1.5.4"
 nb-clean = "^4.0.1"
 pre-commit = "^4.1.0"
+memory-profiler = "^0.61.0"
 
 [build-system]
 requires = ["poetry-core"]
