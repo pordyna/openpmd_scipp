@@ -12,8 +12,8 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 openpmd-api = ">=0.15.2"
-numpy = "^2.2.4"
-scipp = "^25.3.0"
+numpy = ">=1.15.0"
+scipp = ">=24.9.1"
 
 [tool.poetry.group.extras.dependencies]
 plopp = ">=24.9.1"

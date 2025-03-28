@@ -16,7 +16,6 @@ from typing import Iterable, MutableMapping
 import numpy as np
 import openpmd_api as pmd
 import scipp as sc
-from memory_profiler import profile
 
 from .utils import _unit_dimension_to_scipp
 
@@ -77,16 +76,8 @@ class DataRelay:
             assert coord.ndim in {0, 1}, "Only 1 dimensional or scalar coordinates are supported."
 
         for dim in self.dims:
-            coord = self.coords[dim]
-            diffs = coord[dim, 1:] - coord[dim, :-1]
-            diffs = diffs.to(unit="m")
-            idx = list(self.record.axis_labels).index(dim)
-            step = self.record.grid_spacing[idx]
-            step *= self.record.grid_unit_SI
-            step = step * sc.Unit("m")
-            assert sc.allclose(diffs, step), (
-                f"The data has to be contiguous! diffs: {diffs}, step: {step}"
-            )
+            if self.coords[dim].ndim != 0:
+                assert sc.islinspace(self.coords[dim]), "The data has to be contiguous!"
 
     @cached_property
     def _da_extended_coords(self) -> MutableMapping[str, sc.DataArray]:
@@ -167,7 +158,6 @@ class DataRelay:
             coords=new_coords,
         )
 
-    @profile
     def load_data(self) -> sc.DataArray:
         """Load data from the openPMD dataset.
 
