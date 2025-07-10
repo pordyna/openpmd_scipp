@@ -76,7 +76,7 @@ class DataRelay:
             assert coord.ndim in {0, 1}, "Only 1 dimensional or scalar coordinates are supported."
 
         for dim in self.dims:
-            if self.coords[dim].ndim != 0:
+            if self.coords[dim].ndim != 0 and len(self.coords[dim]) > 1:
                 assert sc.islinspace(self.coords[dim]), "The data has to be contiguous!"
 
     @cached_property
