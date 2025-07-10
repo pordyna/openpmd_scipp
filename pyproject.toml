@@ -29,6 +29,7 @@ pytest = "^8.3.4"
 nbmake = "^1.5.4"
 nb-clean = "^4.0.1"
 pre-commit = "^4.1.0"
+memory-profiler = "^0.61.0"
 
 [build-system]
 requires = ["poetry-core"]

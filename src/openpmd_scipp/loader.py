@@ -22,7 +22,7 @@ def get_time_axis(series):
     :param series: The openPMD series containing the data.
     :type series: openpmd_api.Series
     :return: A Scipp array representing the time axis.
-    :rtype: sc.DataArray
+    :rtype: sc.DataSet
     """
     t = [
         series.iterations[it].time * series.iterations[it].time_unit_SI for it in series.iterations
