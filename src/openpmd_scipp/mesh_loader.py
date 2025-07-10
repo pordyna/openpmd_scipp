@@ -190,7 +190,6 @@ class DataRelay:
         self.record_component.load_chunk(scipp_array.values.data, offset=offset, extent=extent)
         self.series.flush()
         scipp_array *= self.record_component.unit_SI
-        scipp_array = sc.squeeze(scipp_array)
         data_array = sc.DataArray(data=scipp_array, coords=self.coords)
         return data_array
 
