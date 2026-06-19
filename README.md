@@ -17,9 +17,7 @@ Load openpmd datasets to `scipp` `DataArrays`.
 ## Installation
 It can be easily installed with pip.
 ```bash
-git clone https://github.com/pordyna/openpmd_scipp.git
-cd openpmd-scipp
-pip install .
+pip install git+https://github.com/pordyna/openpmd_scipp.git
 ```
 
 ## Getting started
