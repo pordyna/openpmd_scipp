@@ -61,17 +61,23 @@ class DataLoader:
 
     """
 
-    def __init__(self, path):
+    def __init__(self, path, access=pmd.Access.read_only, *series_args, **series_kwargs):
         """Initialize the DataLoader with an openPMD series from the specified file path.
 
         :param path: The file path to the openPMD data file.
         :type path: str
+        :param access: The access mode used to open the series. Defaults to read-only.
+        :type access: openpmd_api.Access, optional
+        :param series_args: Additional positional arguments forwarded to
+            :class:`openpmd_api.Series`.
+        :param series_kwargs: Additional keyword arguments forwarded to
+            :class:`openpmd_api.Series`.
 
-        Initializes the `series` attribute as an openPMD series in read-only mode
-        and the `iterations` attribute as a Scipp dataset containing iteration IDs
-        and their corresponding times.
+        Initializes the `series` attribute with the supplied access mode and
+        additional Series constructor arguments. The `iterations` attribute is a
+        Scipp dataset containing iteration IDs and their corresponding times.
         """
-        self.series = pmd.Series(str(path), pmd.Access.read_only)
+        self.series = pmd.Series(str(path), access, *series_args, **series_kwargs)
         self.iterations = get_iterations(self.series)
 
     def get_field(
